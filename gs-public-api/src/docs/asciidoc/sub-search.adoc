@@ -1,0 +1,21 @@
+== 장소 조회
+
+=== Request
+
+include::{snippets}/search/detail/success/http-request.adoc[]
+include::{snippets}/search/detail/success/path-parameters.adoc[]
+include::{snippets}/search/detail/success/request-parameters.adoc[]
+
+=== Response
+
+====
+[source,indent=0,role="primary"]
+.검색 정보가 존재하는 경우
+include::{snippets}/search/simple/success/curl-request.adoc[]
+include::{snippets}/search/simple/success/http-response.adoc[]
+
+[source,indent=0,role="secondary"]
+.검색 정보를 원천 데이터와 함께 조회
+include::{snippets}/search/detail/success/curl-request.adoc[]
+include::{snippets}/search/detail/success/http-response.adoc[]
+====

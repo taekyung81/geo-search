@@ -1,0 +1,72 @@
+key:
+  naver:
+    client-id: mv6nn1DANULTfDEhFRKs
+    client-secret: oUAkJq06oE
+    client-info: https://developers.naver.com/apps/#/myapps/mv6nn1DANULTfDEhFRKs/overview
+  kakao:
+    rest-key: 8b25c6263f8d4bc96fd282784cabaca4
+
+spring:
+  kafka:
+    topic: "topic1"
+    bootstrap-servers: localhost:9092
+    producer:
+      acks: 1 #leader check
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      batch-size: 10
+    consumer:
+      group-id: "geo-search-app"
+      max-poll-records: 1000
+      fetch-min-size: 1KB
+      fetch-max-wait: 5s  #최소 fetch 5초
+    template:
+      default-topic: "${spring.kafka.topic}"
+  application:
+    name: geo-search
+  sleuth:
+    sampler:
+      probability: 1.0 #전체 다 샘플링
+    trace-id128: true
+    messaging:
+      kafka:
+        enabled: true
+        streams:
+          enabled: true
+  zipkin:
+    enabled: true
+    base-url: http://localhost:9411/
+    sender:
+      type: web
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+        exclude: shutdown, threaddump
+feign:
+  circuitbreaker: #https://docs.spring.io/spring-cloud-openfeign/docs/current/reference/html/#spring-cloud-feign-circuitbreaker
+    enabled: true   #FeignAutoConfiguration
+  client:
+    config:
+      default:
+        loggerLevel: basic
+        connectTimeout: 300
+        readTimeout: 1000
+        capabilities:
+          - feign.micrometer.MicrometerCapability
+      kakao-place-api:
+        connectTimeout: 1000
+        readTimeout: 1000
+
+resilience4j.circuitbreaker:
+  configs:
+    default:
+      slidingWindowSize: 100
+      permittedNumberOfCallsInHalfOpenState: 10 #half-open일때 확인할 요청 갯수
+      waitDurationInOpenState: 5000 #오픈시간(5초가 지나면 half-open 상태로 변경)
+      failureRateThreshold: 10 #10퍼센트가 넘으면 closed -> open 상태로 변경
+  instances:
+    kakao-api:
+      baseConfig: default
+      waitDurationInOpenState: 1000

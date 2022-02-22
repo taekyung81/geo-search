@@ -1,0 +1,108 @@
+buildscript {
+    repositories {
+        maven { url "https://plugins.gradle.org/m2/" }
+    }
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:2.5.9"
+        classpath "io.spring.gradle:dependency-management-plugin:1.0.11.RELEASE"
+        classpath "com.vanniktech:gradle-dependency-graph-generator-plugin:0.7.0"
+    }
+}
+
+plugins {
+    id 'java'
+    id 'jacoco'
+}
+apply plugin: "com.vanniktech.dependency.graph.generator"
+
+ext {
+    set('springCloudVersion', "2020.0.5")
+    set('springBootVersion', "2.5.9")
+}
+allprojects {
+    group 'com.bistros.gs'
+    version '1.0-SNAPSHOT'
+    repositories {
+        mavenCentral()
+    }
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+
+subprojects {
+    apply plugin: "java"
+    apply plugin: "java-library"
+    apply plugin: 'jacoco'
+    apply plugin: "io.spring.dependency-management"
+
+    repositories {
+        mavenCentral()
+        maven { url 'https://repo.spring.io/release/' }
+    }
+
+    dependencyManagement {
+        imports { mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}" }
+        imports { mavenBom("org.springframework.boot:spring-boot-dependencies:${springBootVersion}") }
+    }
+
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-actuator'
+        implementation 'org.springframework.boot:spring-boot-starter-validation'
+        implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+        implementation 'org.springframework.cloud:spring-cloud-sleuth-zipkin'
+
+        annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+        compileOnly 'org.projectlombok:lombok:1.18.22'
+        annotationProcessor 'org.projectlombok:lombok:1.18.22'
+        testCompileOnly 'org.projectlombok:lombok:1.18.22'
+        testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
+
+    }
+    jacoco {
+        toolVersion = "0.8.7"
+    }
+    test {
+        useJUnitPlatform()
+        finalizedBy 'jacocoTestReport'
+    }
+
+}
+
+
+task testRootReport(type: TestReport) {
+    destinationDir = file("$buildDir/reports/allTests")
+    reportOn subprojects.tasks.test
+}
+
+task jacocoRootReport(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
+    dependsOn(subprojects.test)
+    dependsOn("testRootReport")
+
+    additionalSourceDirs.from = files(subprojects.sourceSets.main.allSource.srcDirs)
+    sourceDirectories.from = files(subprojects.sourceSets.main.allSource.srcDirs)
+    classDirectories.from = files(subprojects.sourceSets.main.output)
+    executionData.from = files(subprojects.jacocoTestReport.executionData)
+    reports {
+        html.enabled true
+        html.destination file("${buildDir}/reports/jacoco")
+    }
+}
+
+import com.vanniktech.dependency.graph.generator.DependencyGraphGeneratorPlugin
+
+plugins.apply(DependencyGraphGeneratorPlugin)
+dependencyGraphGenerator {
+    generators {
+        myModule {
+            include = { dependency ->
+                dependency.getModuleGroup().startsWith("com.bistros")
+//                        || dependency.getModuleGroup().startsWith("org.springframework")
+            }
+            children = { dependency -> true }
+        }
+    }
+}

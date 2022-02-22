@@ -1,0 +1,21 @@
+== 랭킹 조회
+
+=== Request
+
+include::{snippets}/ranking/success/http-request.adoc[]
+include::{snippets}/ranking/success/request-parameters.adoc[]
+
+include::{snippets}/ranking/success/curl-request.adoc[]
+
+=== Response
+
+====
+[source,indent=0,role="primary"]
+.랭킹 정보가 존재하는 경우
+include::{snippets}/ranking/success/response-body.adoc[]
+include::{snippets}/ranking/success/response-fields.adoc[]
+
+[source,indent=0,role="secondary"]
+.랭킹 정보가 존재하는 경우2222222
+include::{snippets}/ranking/not-exsit/response-body.adoc[]
+====

@@ -1,0 +1,62 @@
+plugins {
+    id 'org.asciidoctor.jvm.convert' version '3.3.2'
+    id 'org.springframework.boot'
+}
+
+
+ext {
+    snippetsDir = file('build/generated-snippets')
+}
+
+configurations {
+    asciidoctorExtensions
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+    implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+    implementation 'org.springframework.kafka:spring-kafka'
+    implementation project(":gs-core")
+    implementation project(":gs-external")
+
+
+    asciidoctorExtensions 'io.spring.asciidoctor:spring-asciidoctor-extensions-block-switch:0.6.0'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+}
+
+
+asciidoctor {
+    configurations 'asciidoctorExtensions'
+    baseDirFollowsSourceDir()
+    dependsOn test
+}
+
+test {
+    outputs.dir snippetsDir
+    useJUnitPlatform()
+}
+
+bootJar {
+    dependsOn asciidoctor
+    from("${asciidoctor.outputDir}") {
+        into 'static/docs'
+    }
+    archiveFileName = "gs.jar"
+}
+
+springBoot {
+    buildInfo()
+}
+
+//bootRun 으로 실행히 restdoc 문서를 포함하기 위함
+task copyRestDocs(type: Copy) {
+    dependsOn asciidoctor
+    from "${asciidoctor.outputDir}"
+    into "${sourceSets.main.output.resourcesDir}/static/docs"
+}
+bootRun {
+    dependsOn copyRestDocs
+}

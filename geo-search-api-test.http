@@ -1,0 +1,9 @@
+### 1. "카카오뱅크" 검색
+GET http://localhost:8080/v1/search/카카오뱅크
+
+### 대포찜닭 검색 (원천 API 결과 포함)
+GET http://localhost:8080/v1/search/대포찜닭?detail=true
+
+
+### 랭킹 조회
+GET http://localhost:8080/v1/rank

@@ -1,0 +1,6 @@
+rootProject.name = 'geo-search'
+
+include 'gs-public-api'
+include 'gs-external'
+include 'gs-core'
+

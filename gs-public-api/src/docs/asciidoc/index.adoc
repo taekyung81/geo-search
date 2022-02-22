@@ -1,0 +1,14 @@
+= Geo-Search API Document
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 3
+:sectlinks:
+:snippets: ../../../build/generated-snippets
+
+//조회
+include::sub-search.adoc[]
+
+//랭킹
+include::sub-rank.adoc[]
