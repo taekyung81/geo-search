@@ -16,7 +16,7 @@
     * 단순하게 "장소명" 만을 대상으로 일치 여부를 판단하였다.
 
 * 장소명에 대한 필터링
-    * `PlaceNameFilter extends UnaryOperator<String>` 을 구현하는 `TagNameFilter(html 제거)` , `WhiteSpaceFilter(공백 제거)` 2개를 기본
+    * `PlaceNameFilter extends UnaryOperator<String>`  을 구현하는 [TagNameFilter](https://github.com/taekyung81/geo-search/blob/master/gs-core/src/main/java/com/bistros/gs/application/search/filter/TagNameFilter.java) , [WhiteSpaceFilter](https://github.com/taekyung81/geo-search/blob/master/gs-core/src/main/java/com/bistros/gs/application/search/filter/WhiteSpaceFilter.java) 2개를 기본
       제공
     * 추후에 '장소명'에 관한 다른 룰이 적용될 것을 고려해서 PlaceNameFilter 를 체이닝
 
@@ -26,7 +26,7 @@
 
 * 응답시간 등의 지연은 feign 설정으로 관리함
 * 연속적인 포털API 장애는 circuit breaker 패턴을 적용함
-* 특정 API 가 장애가 나더라도 fallback을 통해 정상 데이터만 반환하도록 fallback 적용
+* 특정 API 가 장애가 나더라도 다른 API 데이터 라도  반환하도록 fallback 적용
 
 * 아래의 내용은 네이버 API 가 정상적인 응답을 주지 않았을 때 fallback 으로 빈 배열을 선언하고 정상적인 응답을 반환한 경우이다.
   ![그림](images/fallback1.png)
