@@ -43,14 +43,14 @@
     * 카카오가 실패할 경우 '네이버'를 호출하지 않는 등의 처리가 가능하지만
     * 각 API 실행은 독립 수행이기 때문에 동시에 호출한다면 서비스 응답 시간이 줄어들 것이다.
 * 동시 호출로 변경
-    * 단점) Threadpool 이 도입되어서 모니터링의 복잡해짐 (brave 의 추가)
+    * 단점) Threadpool 이 도입되어서 모니터링의 복잡해지만, 다행히 Brave 의 구현체가 존재해서 사용함 [여기](https://github.com/taekyung81/geo-search/blob/master/gs-core/src/main/java/com/bistros/gs/application/search/service/PlaceApiCallerThreadPool.java#L16)
     * 단점) 시퀀스 방식에 의해서 디버깅이 복잡해짐
     * 장점) 서비스 API 에서 중요한 응답시간이 짧아짐
 
 ### 랭킹 정보의 저장
 
 * '쿼리, 호출횟수'를 저장하는 Default Repository 를 구현
-* ConcurrentHashMap 기반으로 구현 한 뒤 추후에 LongAdder 로 변경하였으나 드라마틱한 차이를 못 봄
+* ConcurrentHashMap 기반으로 구현 한 뒤 추후에 LongAdder 로 변경하였으나 드라마틱한 차이를 못 봄 [여기](https://github.com/taekyung81/geo-search/blob/master/gs-external/src/test/java/com/bistros/gs/ranking/repository/impl/DefaultRankingRepositoryTest.java#L15)
 
 ### 랭킹 조회의 부하
 
