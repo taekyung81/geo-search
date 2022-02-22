@@ -16,8 +16,10 @@
     * 단순하게 "장소명" 만을 대상으로 일치 여부를 판단하였다.
 
 * 장소명에 대한 필터링
-    * `PlaceNameFilter extends UnaryOperator<String>`  을 구현하는 [TagNameFilter](https://github.com/taekyung81/geo-search/blob/master/gs-core/src/main/java/com/bistros/gs/application/search/filter/TagNameFilter.java) , [WhiteSpaceFilter](https://github.com/taekyung81/geo-search/blob/master/gs-core/src/main/java/com/bistros/gs/application/search/filter/WhiteSpaceFilter.java) 2개를 기본
-      제공
+    * `PlaceNameFilter extends UnaryOperator<String>`  을
+      구현하는 [TagNameFilter](https://github.com/taekyung81/geo-search/blob/master/gs-core/src/main/java/com/bistros/gs/application/search/filter/TagNameFilter.java)
+      , [WhiteSpaceFilter](https://github.com/taekyung81/geo-search/blob/master/gs-core/src/main/java/com/bistros/gs/application/search/filter/WhiteSpaceFilter.java)
+      2개를 기본 제공
     * 추후에 '장소명'에 관한 다른 룰이 적용될 것을 고려해서 PlaceNameFilter 를 체이닝
 
 ### API 호출에 대한 고려사항
@@ -26,10 +28,12 @@
 
 * 응답시간 등의 지연은 feign 설정으로 관리함
 * 연속적인 포털API 장애는 circuit breaker 패턴을 적용함
-* 특정 API 가 장애가 나더라도 다른 API 데이터 라도  반환하도록 fallback 적용
+* 특정 API 가 장애가 나더라도 다른 API 데이터 라도 반환하도록 fallback 적용
 
 * 아래의 내용은 네이버 API 가 정상적인 응답을 주지 않았을 때 fallback 으로 빈 배열을 선언하고 정상적인 응답을 반환한 경우이다.
-  ![그림](images/fallback1.png)
+
+![그림](images/fallback1.png)
+
 * 아래의 내용은 네이버 API 서킷이 열려서 fallback 이 된 상태이다.
 
 > [ool-2-thread-42] c.b.g.r.a.i.n.NaverPlaceClientFallBack   : kakaobank fallback
@@ -43,14 +47,16 @@
     * 카카오가 실패할 경우 '네이버'를 호출하지 않는 등의 처리가 가능하지만
     * 각 API 실행은 독립 수행이기 때문에 동시에 호출한다면 서비스 응답 시간이 줄어들 것이다.
 * 동시 호출로 변경
-    * 단점) Threadpool 이 도입되어서 모니터링의 복잡해지만, 다행히 Brave 의 구현체가 존재해서 사용함 [여기](https://github.com/taekyung81/geo-search/blob/master/gs-core/src/main/java/com/bistros/gs/application/search/service/PlaceApiCallerThreadPool.java#L16)
+    * 단점) Threadpool 이 도입되어서 모니터링의 복잡해지만, 다행히 Brave 의 구현체가 존재해서
+      사용함 [여기](https://github.com/taekyung81/geo-search/blob/master/gs-core/src/main/java/com/bistros/gs/application/search/service/PlaceApiCallerThreadPool.java#L16)
     * 단점) 시퀀스 방식에 의해서 디버깅이 복잡해짐
     * 장점) 서비스 API 에서 중요한 응답시간이 짧아짐
 
 ### 랭킹 정보의 저장
 
 * '쿼리, 호출횟수'를 저장하는 Default Repository 를 구현
-* ConcurrentHashMap 기반으로 구현 한 뒤 추후에 LongAdder 로 변경하였으나 드라마틱한 차이를 못 봄 [여기](https://github.com/taekyung81/geo-search/blob/master/gs-external/src/test/java/com/bistros/gs/ranking/repository/impl/DefaultRankingRepositoryTest.java#L15)
+* ConcurrentHashMap 기반으로 구현 한 뒤 추후에 LongAdder 로 변경하였으나 드라마틱한 차이를 못
+  봄 [여기](https://github.com/taekyung81/geo-search/blob/master/gs-external/src/test/java/com/bistros/gs/ranking/repository/impl/DefaultRankingRepositoryTest.java#L15)
 
 ### 랭킹 조회의 부하
 
