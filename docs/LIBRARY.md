@@ -11,6 +11,8 @@ implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 * [링크](https://spring.io/projects/spring-cloud-openfeign) 스프링 클라우드에 인테그레이션 되어 있어서 어노테이션과 property 기반으로 쉽게 사용가능하다. 그래서
   hystrix, resilience4j, micrometer등과도 편히 사용 가능하다
 
+---
+
 #### resilience4j
 
 ```
@@ -23,6 +25,8 @@ implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-re
   ![그림](images/zipkin2.png)
 * 순수하게 resilience4j나 feign 이 아닌 spring cloud 의 `org.springframework.cloud.openfeign.FeignCircuitBreaker' 에 의해
   CircuitBreaker(Supplier) 형태로 수행된다.
+
+---
 
 #### Micrometer
 
@@ -39,6 +43,8 @@ implementation 'io.micrometer:micrometer-registry-prometheus'
 * `http://localhost:8080/actuator/metrics/http.server.requests?tag=method:GET` 를 조회하면 아래와 같은 Simple Metric 정보를 확인 할 수 있다
   ![그림](images/micrometer.png)
 * 또한 여러 vendor 들과 통합해서 입맛에 맞는 모니터링 환경 구축에 활용 할 수 있다.
+
+---
 
 #### restdoc & asciidoctor-extendsion
 
